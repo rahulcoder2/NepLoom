@@ -42,10 +42,10 @@ const UserButton = () => {
         </DropdownMenu>
       ) : (
         <div className="flex space-x-2 ">
-          <Link href={`/sign-in`}>
+          <Link href={`/login`}>
             <Button variant="ghost">Sign In</Button>
           </Link>
-            <Link href={`/sign-up`}>
+            <Link href={`/signup`}>
                 <Button>Sign Up</Button>
             </Link>
         </div>

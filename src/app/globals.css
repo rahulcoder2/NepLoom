@@ -68,13 +68,35 @@
   }
 }
 
+@layer base {
+  /* Remove scrollbar */
+  .remove-scrollbar::-webkit-scrollbar {
+    width: 0px;
+    height: 0px;
+    border-radius: 0px;
+  }
+
+  .remove-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .remove-scrollbar::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: 0px;
+  }
+
+  .remove-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: transparent;
+  }
+}
+
 @layer utilities {
   /* ===== TYPOGRAPHY */
   .h1 {
     @apply text-[36px] leading-[42px]  font-semibold;
   }
   .h2 {
-    @apply text-[24px] leading-[36px] font-semibold;
+    @apply text-[24px] leading-[36px] font-semibold;         
   }
   .h3 {
     @apply text-[20px] leading-[28px] font-semibold;
