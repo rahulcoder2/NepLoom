@@ -59,9 +59,10 @@
   }
 }
 
+
 @layer base {
   * {
-    @apply border-border scroll-smooth;
+    @apply border-border outline-ring/0 scroll-smooth;
   }
   body {
     @apply bg-background text-foreground min-h-screen;
@@ -126,3 +127,6 @@
   }
   
 }
+
+
+
