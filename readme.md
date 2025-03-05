@@ -29,7 +29,7 @@ NepLoom - E-Commerce Platform for  Nepali Traditional & Modern Clothing
 
 ## <a name="introduction">🤖 Introduction</a>
 
-Neploom is an online platform that brigns Nepali culture to the world through a curated selection of traditional and modern clothing. We offer a wide variety of garments that celebrate Nepal's rich heritage while blending contemporary styles, making it accessible to a global audience, Whether you're looking for elegant traditional wear or stylish modern designs, NepLoom has somthing for everyone.
+  NepLoom is an online platform that brings Nepali culture to the world through a curated selection of traditional and modern clothing. We offer a wide variety of garments that celebrate Nepal's rich heritage while blending contemporary styles, making it accessible to a global audience. Whether you're looking for elegant traditional wear or stylish modern designs, NepLoom has something for everyone.
 
 ## <a name="tech-stack">⚙️ Tech Stack</a>
 
