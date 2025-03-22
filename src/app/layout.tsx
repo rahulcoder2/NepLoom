@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Poppins } from "next/font/google";
 import "./globals.css";
+import ReduxProvider from "@/lib/redux-provider";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -31,9 +32,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={` ${inter.variable} ${poppins.variable} font-inter antialiased` }
+        className={` ${inter.variable} ${poppins.variable} font-poppins antialiased`}
       >
-        {children}
+        <ReduxProvider>{children}</ReduxProvider>
       </body>
     </html>
   );

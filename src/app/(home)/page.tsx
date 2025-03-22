@@ -3,7 +3,8 @@ import Image from "next/image";
 export default function Home() {
   return (
     <div>
-      <h1>Hello, World!</h1>
+      <h1 className="h1 font-inter">Hello, World!</h1>
+      <p className="body-2 ">pop</p>
       <Image
         src="/globe.svg"
         alt="Vercel Logo"
