@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import { Inter, Poppins } from "next/font/google";
 import "./globals.css";
 import ReduxProvider from "@/redux/redux-provider";
-import Header from "@/components/shared/header";
+
 import { Toaster } from "@/components/ui/sonner";
+import Header from "@/components/shared/header";
+import Footer from "@/components/shared/footer";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -35,10 +37,11 @@ export default function RootLayout({
         className={`${inter.variable} ${poppins.variable} font-poppins antialiased`}
       >
         <ReduxProvider>
-          <main className="min-h-screen flex flex-col">
+          <div className="relative flex min-h-screen flex-col">
             <Header />
-            {children}
-          </main>
+            <main className="flex-1">{children}</main>
+            <Footer/>
+          </div>
           <Toaster />
         </ReduxProvider>
       </body>

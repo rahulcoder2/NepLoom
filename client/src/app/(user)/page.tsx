@@ -1,8 +1,17 @@
+import CategoryGrid from "@/components/card/category-grid";
+import HeroCarousel from "@/components/carousel/hero-carousel";
+import Container from "@/components/shared/container";
 
-export default function Home() {
+
+export default function HomePage() {
   return (
-    <div className="py-20">
-      <h1 className="h1 font-inter">Hello, World!</h1>
-    </div>
+    <Container>
+      {/* Main Promotional Carousels */}
+      <div className="mt-6 mb-8">
+        <HeroCarousel />
+      </div>
+      {/* Category Grid */}
+      <CategoryGrid />
+    </Container>
   );
 }
