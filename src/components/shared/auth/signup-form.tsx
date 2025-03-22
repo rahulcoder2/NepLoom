@@ -6,28 +6,26 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-
-const signupSchema = z.object({
-  fullName: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string().email("Invalid email address"),
-  phone: z.string().min(10, "Phone number must be at least 10 digits"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-});
+import { signUpFormData, signUpSchema } from "@/schemas/signup-schema";
 
 const SignupForm = () => {
   const {
     handleSubmit,
     register,
     formState: { isSubmitting, errors },
-  } = useForm({
+  } = useForm<signUpFormData>({
     mode: "all",
-    resolver: zodResolver(signupSchema),
+    resolver: zodResolver(signUpSchema),
+    defaultValues: {
+      fullName: "",
+      email: "",
+      phone: "",
+      password: "",
+    },
   });
 
-  const onSubmit = () => {
-    
-    console.log("Form submitted");
+  const onSubmit = (data: signUpFormData) => {
+    console.log("Form submitted", data);
   };
 
   return (

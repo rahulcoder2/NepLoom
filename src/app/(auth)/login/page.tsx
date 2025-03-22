@@ -7,10 +7,10 @@ const SignInPage = () => {
       <div className="max-w-[400px] mx-auto space-y-6">
         <div className="space-y-4">
           <h1 className="h1 font-inter">
-            Login in to Neploom
+            Welcome back
           </h1>
           <p className="body-2 text-muted-foreground">
-            Enter your details below to login to your account.
+            Login to your Neploom account.
           </p>
         </div>
         <LoginForm />
