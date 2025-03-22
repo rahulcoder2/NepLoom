@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,17 +13,17 @@ import {
 import { User } from "lucide-react";
 
 const UserButton = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
 
   return (
     <>
       {isLoggedIn ? (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="relative">
-              <User className="h-8 w-8 text-gray-600" />
+            <div className="relative cursor-pointer text-white">
+              <User className="h-6 w-6 " />
               <span className="sr-only">User menu</span>
-            </Button>
+            </div>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
@@ -41,14 +40,9 @@ const UserButton = () => {
           </DropdownMenuContent>
         </DropdownMenu>
       ) : (
-        <div className="flex space-x-2 ">
-          <Link href={`/login`}>
-            <Button variant="ghost">Sign In</Button>
-          </Link>
-            <Link href={`/signup`}>
-                <Button>Sign Up</Button>
-            </Link>
-        </div>
+        <Link href={`/login`} className="text-white cursor-pointer">
+          Login
+        </Link>
       )}
     </>
   );
