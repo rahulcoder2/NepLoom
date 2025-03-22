@@ -7,6 +7,9 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signUpFormData, signUpSchema } from "@/schemas/signup-schema";
+import axios, { AxiosError } from "axios";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const SignupForm = () => {
   const {
@@ -19,13 +22,25 @@ const SignupForm = () => {
     defaultValues: {
       fullName: "",
       email: "",
-      phone: "",
       password: "",
     },
   });
 
-  const onSubmit = (data: signUpFormData) => {
-    console.log("Form submitted", data);
+  const router = useRouter();
+  const onSubmit = async (formData: signUpFormData) => {
+    try {
+      const res = await axios.post("/api/auth/register", formData);
+      if (res.status == 201) {
+        toast.success(res.data.message);
+        router.push("/login");
+      }
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data?.message || "Registration failed");
+      } else {
+        toast.error("An unexpected error occurred");
+      }
+    }
   };
 
   return (
@@ -42,13 +57,6 @@ const SignupForm = () => {
         <Input id="email" type="email" {...register("email")} />
         {errors.email && (
           <p className="text-red-500 text-sm">{errors.email.message}</p>
-        )}
-      </div>
-      <div className="grid gap-2">
-        <Label htmlFor="phone">Phone</Label>
-        <Input id="phone" type="text" {...register("phone")} />
-        {errors.phone && (
-          <p className="text-red-500 text-sm">{errors.phone.message}</p>
         )}
       </div>
       <div className="grid gap-2">

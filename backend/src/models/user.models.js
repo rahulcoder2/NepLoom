@@ -27,12 +27,6 @@ const userSchema = new Schema(
             trim: true,
             lowercase: true,
         },
-        phone: {
-            type: String,
-            require: [true, 'phone number is required'],
-            unique: true,
-            trim: true,
-        },
         password: {
             type: String,
             required: [true, 'Password is required'],
@@ -46,10 +40,6 @@ const userSchema = new Schema(
             type: String,
             enum: AvailableSocialLogins,
             default: UserLoginType.EMAIL_PASSWORD,
-        },
-        isVerified: {
-            type: Boolean,
-            default: false,
         },
         refreshToken: {
             type: String,
@@ -66,7 +56,7 @@ const userSchema = new Schema(
 
 userSchema.pre('save', async function (next) {
     if (!this.isModified('password')) return next();
-    this.password = bcrypt.hash(this.password, 10);
+    this.password = await bcrypt.hash(this.password, 10);
     next();
 });
 
@@ -104,7 +94,7 @@ userSchema.methods.generateTemporaryForgetPasswordToken = function () {
 
     const hashToken = crypto.createHash('sha256').update(unHashToken).digest('hex');
 
-    const tokenExpiry = new date.now() + USER_TEMPORARY_TOKEN_EXPIRY
+    const tokenExpiry =  date.now() + USER_TEMPORARY_TOKEN_EXPIRY
     return {unHashToken, hashToken, tokenExpiry}
 
 }

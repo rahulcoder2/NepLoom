@@ -9,6 +9,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import ForgetPasswordModel from "./forget-password-model";
 import { loginFormData, loginSchema } from "@/schemas/login-schema";
+import axios, { AxiosError } from "axios";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const LoginForm = () => {
   const [isForgetPasswordModelOpen, setIsForgetPasswordModelOpen] = useState(false);
@@ -21,8 +24,32 @@ const LoginForm = () => {
     resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit = (data : loginFormData) => {
-    console.log("Form submitted", data);
+    const router = useRouter();
+
+  const onSubmit = async (signinData : loginFormData) => {
+    try {
+      const res = await axios.post(
+        "http://localhost:8000/api/user/login",
+        signinData
+      );
+      if (res.status === 200) {
+        toast.success(res.data.message || "Login successful!");
+
+        // Check user role and redirect accordingly
+        const { role } = res.data?.user
+        if (role === "admin") {
+          router.push("/dashboard");
+        } else {
+          router.push("/");
+        }
+      }
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data?.message || "Login failed");
+      } else {
+        toast.error("An unexpected error occurred");
+      }
+    }
   };
 
   return (

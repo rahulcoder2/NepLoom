@@ -30,7 +30,7 @@ const generateAccessAndRefreshTokens = async (userId) => {
 
 const registerUser = asyncHandle(async (req, res) => {
     // get data from form
-    const { email, password, phone, fullName } = req.body;
+    const { email, password, fullName, role } = req.body;
 
     // existedUser check
     const existedUser = await User.findOne({ email });
@@ -42,14 +42,14 @@ const registerUser = asyncHandle(async (req, res) => {
     }
 
     // create newUser account
-    const newUser = User.create({
+    const newUser = new User({
         fullName,
         email,
-        phone,
         password,
         role: role || UserRolesEnum.USER,
-        isVerified: true,
     });
+
+    await newUser.save(); 
 
     // keep out sensitive data or not to sent data to client
     const createdUser = await User.findById(newUser._id).select(
@@ -65,7 +65,7 @@ const registerUser = asyncHandle(async (req, res) => {
 
     return res.status(201).json({
         message: 'User registered Successfully',
-        data: createdUser,
+        user: createdUser,
     });
 });
 

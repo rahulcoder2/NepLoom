@@ -8,10 +8,12 @@ const app = express();
 const httpServer = createServer(app);
 
 // cors origin setting
-app.get(
+app.use(
     cors({
-        credentials: true,
-        origin: process.env.CORS_ORIGIN,
+        origin: process.env.CORS_ORIGIN, // Allow requests from your frontend
+        credentials: true, // Allow cookies to be sent
+        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // Allow these HTTP methods
+        allowedHeaders: 'Content-Type,Authorization', // Allow these headers
     })
 );
 
@@ -32,7 +34,7 @@ import userRouter from './routes/user.routes.js'
 
 
 // routes declaration 
-app.use('/api/v1/user', userRouter)
+app.use('/api/user', userRouter)
 
 
 
