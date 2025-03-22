@@ -6,14 +6,17 @@ import UserButton from "@/components/shared/user-button";
 
 const Header = () => {
   return (
-    <header className="border-b h-16 flex items-center justify-center shadow-sm">
-      <Container className="flex items-center justify-between">
-        <Link href="/" className="flex-shrink-0 flex items-center">
-          <Leaf className="h-8 w-8 text-green-600" />
-          <span className="ml-2 h3 hidden md:block">Neploom</span>
-        </Link>
-
-        <UserButton />
+    <header className="border-b w-full fixed h-16 shadow-sm bg-white">
+      <Container>
+        <div className="flex w-full items-center justify-between py-4">
+          <Link href="/">
+            <div className="flex items-center">
+              <Leaf size={24} />
+              <span>Neploom</span>
+            </div>
+          </Link>
+          <UserButton />
+        </div>
       </Container>
     </header>
   );
