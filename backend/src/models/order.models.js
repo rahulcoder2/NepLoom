@@ -17,6 +17,18 @@ const orderSchema = new Schema(
             type: Number,
             required: true,
         },
+        tax:{
+            type:Number,
+            required: true
+        },
+        shippingPrice:{
+            type: Number,
+            required: true
+        },
+        orderTotalPrice:{
+            type: Number,
+            required: true
+        },
         coupon: {
             type: Schema.Types.ObjectId,
             ref: 'Coupon',
