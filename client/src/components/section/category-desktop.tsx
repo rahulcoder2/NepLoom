@@ -1,14 +1,11 @@
-import Image from "next/image";
-import Link from "next/link";
 import { cn } from "@/lib/utils";
+import CategoryCard from "../shared/category-card";
 
 export interface CategoryDesktopProps {
   categories: {
-    id: number;
+    _id: number;
     name: string;
-    slug: string;
     icon: string;
-    productCount?: number;
   }[];
 }
 
@@ -30,32 +27,13 @@ export function CategoryDesktop({ categories }: CategoryDesktopProps) {
             >
               {row.map((category, colIndex) => (
                 <td
-                  key={category.id}
+                  key={category._id}
                   className={cn(
                     "p-4 text-center",
                     colIndex < columns - 1 && "border-r border-gray-200"
                   )}
                 >
-                  <Link
-                    href={`/categories/${category.slug}`}
-                    className="flex flex-col items-center transition-all hover:scale-105"
-                    aria-label={`Browse ${category.name} category`}
-                  >
-                    <div className="relative mb-3 h-16 w-16">
-                      <Image
-                        src={category.icon || "/placeholder.svg"}
-                        alt={`${category.name} Category Icon`}
-                        fill
-                        className="object-contain"
-                      />
-                    </div>
-                    <span className="text-sm font-medium">{category.name}</span>
-                    {category.productCount && (
-                      <span className="mt-1 text-xs text-muted-foreground">
-                        {category.productCount} products
-                      </span>
-                    )}
-                  </Link>
+                  <CategoryCard category={category} />
                 </td>
               ))}
 

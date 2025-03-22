@@ -36,64 +36,50 @@ export default function HomePage() {
             Browse All <ArrowRight size={16} />
           </Link>
         </div>
-        <CategorySection categories={[
-  {
-    id: 1,
-    name: "Electronics",
-    slug: "electronics",
-    icon: "/electronics.svg",
-    productCount: 120,
-  },
-  {
-    id: 2,
-    name: "Clothing",
-    slug: "clothing",
-    icon: "/clothing.svg",
-    productCount: 120,
-  },
-  {
-    id: 3,
-    name: "Furniture",
-    slug: "furniture",
-    icon: "/furniture.svg",
-    productCount: 120,
-  },
-  {
-    id: 4,
-    name: "Books",
-    slug: "books",
-    icon: "/books.svg",
-    productCount: 120,
-  },
-  {
-    id: 5,
-    name: "Sports",
-    slug: "sports",
-    icon: "/sports.svg",
-    productCount: 120,
-  },
-  {
-    id: 6,
-    name: "Beauty",
-    slug: "beauty",
-    icon: "/beauty.svg",
-    productCount: 120,
-  },
-  {
-    id: 7,
-    name: "Grocery",
-    slug: "grocery",
-    icon: "/grocery.svg",
-    productCount: 120,
-  },
-  {
-    id: 8,
-    name: "Automotive",
-    slug: "automotive",
-    icon: "/automotive.svg",
-    productCount: 120,
-  },
-]} />
+        <CategorySection
+          categories={[
+            {
+              _id: 1,
+              name: "Electronics",
+              icon: "/electronics.svg",
+            },
+            {
+              _id: 2,
+              name: "Clothing",
+              icon: "/clothing.svg",
+            },
+            {
+              _id: 3,
+              name: "Furniture",
+              icon: "/furniture.svg",
+            },
+            {
+              _id: 4,
+              name: "Books",
+              icon: "/books.svg",
+            },
+            {
+              _id: 5,
+              name: "Sports",
+              icon: "/sports.svg",
+            },
+            {
+              _id: 6,
+              name: "Beauty",
+              icon: "/beauty.svg",
+            },
+            {
+              _id: 7,
+              name: "Grocery",
+              icon: "/grocery.svg",
+            },
+            {
+              _id: 8,
+              name: "Automotive",
+              icon: "/automotive.svg",
+            },
+          ]}
+        />
       </div>
     </Container>
   );
