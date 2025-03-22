@@ -50,3 +50,6 @@ export const PaymentProviderEnum = {
 };
 
 export const AvailablePaymentProviders = Object.values(PaymentProviderEnum);
+
+
+export const USER_TEMPORARY_TOKEN_EXPIRY = 20 * 60 * 1000;

@@ -1,12 +1,14 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
 import {
     AvailableSocialLogins,
     AvailableUserRoles,
+    USER_TEMPORARY_TOKEN_EXPIRY,
     UserLoginType,
     UserRolesEnum,
-} from '../constants';
+} from '../constants.js';
 
 const { Schema, model } = mongoose;
 
@@ -45,7 +47,7 @@ const userSchema = new Schema(
             enum: AvailableSocialLogins,
             default: UserLoginType.EMAIL_PASSWORD,
         },
-        isAdmin: {
+        isVerified: {
             type: Boolean,
             default: false,
         },
@@ -96,4 +98,14 @@ userSchema.methods.generateRefreshToken = function () {
         { expiresIn: process.env.REFRESH_TOKEN_EXPIRY }
     );
 };
+
+userSchema.methods.generateTemporaryForgetPasswordToken = function () {
+    const unHashToken = crypto.randomBytes(64).toString('hex');
+
+    const hashToken = crypto.createHash('sha256').update(unHashToken).digest('hex');
+
+    const tokenExpiry = new date.now() + USER_TEMPORARY_TOKEN_EXPIRY
+    return {unHashToken, hashToken, tokenExpiry}
+
+}
 export const User = model('User', userSchema);
