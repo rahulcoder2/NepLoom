@@ -15,13 +15,11 @@ interface ProductCardProps {
     stock?: number;
   };
   className?: string;
-  originalPrice?: number;
 }
 
 export default function ProductCard({
   product,
   className,
-  originalPrice,
 }: ProductCardProps) {
   // Format price to 2 decimal places
   const formattedPrice = new Intl.NumberFormat("en-US", {
@@ -30,16 +28,16 @@ export default function ProductCard({
   }).format(product.price);
 
   // Format original price if provided
-  const formattedOriginalPrice = originalPrice
+  const formattedprice = product.price
     ? new Intl.NumberFormat("en-US", {
         style: "currency",
         currency: "USD",
-      }).format(originalPrice)
+      }).format(product.price)
     : null;
 
   // Calculate discount percentage if original price is provided
-  const discountPercentage = originalPrice
-    ? Math.round(((originalPrice - product.price) / originalPrice) * 100)
+  const discountPercentage = product.price
+    ? Math.round(((product.price) / product.price) * 100)
     : null;
 
   // Generate stars based on rating (default to 0 if undefined)
@@ -113,9 +111,9 @@ export default function ProductCard({
             <span className="text-base font-semibold text-[#FF5722]">
               {formattedPrice}
             </span>
-            {formattedOriginalPrice && (
+            {formattedprice && (
               <span className="text-xs text-gray-400 line-through">
-                {formattedOriginalPrice}
+                {formattedprice}
               </span>
             )}
           </div>
