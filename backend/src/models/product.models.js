@@ -19,6 +19,11 @@ const productSchema = new Schema(
             required: [true, 'Please add a price'],
             min: [0, 'Price must be non-negative'],
         },
+        discountPrice: {
+            type: Number,
+            required: [true, 'Please add a discountPrice'],
+            min: [0, 'Price must be non-negative'],
+        },
         stock: {
             type: Number,
             min: [0, 'Stock must be non-negative'],
@@ -51,10 +56,7 @@ const productSchema = new Schema(
             min: [0, 'Rating must be at least 0'],
             max: [5, 'Rating cannot be more than 5'],
         },
-        isFeatured: {
-            type: Boolean,
-            default: false,
-        },
+
     },
     { timestamps: true }
 );

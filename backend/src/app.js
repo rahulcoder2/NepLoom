@@ -31,10 +31,12 @@ app.get('/', (req, res) => {
 // Import routes
 
 import userRouter from './routes/user.routes.js'
+import categoryRouter from './routes/category.routes.js'
 
 
 // routes declaration 
 app.use('/api/user', userRouter)
+app.use('/api/categories', categoryRouter);
 
 
 

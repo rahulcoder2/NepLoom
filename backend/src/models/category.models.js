@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
-import mongooseAggregatePaginate from 'mongoose-aggregate-paginate-v2';
-
+import aggregatePaginate from 'mongoose-aggregate-paginate-v2';
 const { Schema, model } = mongoose;
 
 const categorySchema = new Schema(
@@ -12,15 +11,22 @@ const categorySchema = new Schema(
             unique: true, 
             index: true,
         },
+        icon: {
+            type: String
+        },
         description: {
             type: String,
             trim: true,
         },
+        owner: {
+            type: Schema.Types.ObjectId,
+            ref: "User"
+        }
     },
     { timestamps: true }
 );
 
 // Pagination plugin
-categorySchema.plugin(mongooseAggregatePaginate);
+categorySchema.plugin(aggregatePaginate);
 
 export const Category = model('Category', categorySchema);
