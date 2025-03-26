@@ -20,6 +20,7 @@
     "description": "",
     "dependencies": {
         "bcrypt": "^5.1.1",
+        "cloudinary": "^2.6.0",
         "cookie-parser": "^1.4.7",
         "cors": "^2.8.5",
         "express": "^4.21.2",
@@ -27,6 +28,7 @@
         "mailgen": "^2.0.29",
         "mongoose": "^8.10.1",
         "mongoose-aggregate-paginate-v2": "^1.1.4",
+        "multer": "^1.4.5-lts.2",
         "nodemailer": "^6.10.0"
     },
     "devDependencies": {

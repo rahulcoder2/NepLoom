@@ -5,14 +5,17 @@ const productSchema = new Schema(
     {
         name: {
             type: String,
-            require: [true, 'Product name is required'],
+            required: [true, 'Product name is required'],
             trim: true,
             maxLength: [100, 'Product name cannot exceed 100 characters'],
         },
         description: {
             type: String,
             required: [true, 'Product description is required'],
-            maxLength: [2000, 'Product name cannot exceed 2000 characters'],
+            maxLength: [
+                2000,
+                'Product description cannot exceed 2000 characters',
+            ],
         },
         price: {
             type: Number,
@@ -29,21 +32,11 @@ const productSchema = new Schema(
             min: [0, 'Stock must be non-negative'],
             default: 0,
         },
-        mainImage: {
-            required: true,
+        image: {
             type: {
                 url: String,
-                localPath: String,
-            },
-        },
-        subImages: {
-            type: [
-                {
-                    url: String,
-                    localPath: String,
-                },
-            ],
-            default: [],
+            }, // Store only the Cloudinary URL
+            required: true,
         },
         category: {
             type: Schema.Types.ObjectId,
@@ -56,7 +49,10 @@ const productSchema = new Schema(
             min: [0, 'Rating must be at least 0'],
             max: [5, 'Rating cannot be more than 5'],
         },
-
+        owner: {
+            type: Schema.Types.ObjectId,
+            ref: 'User',
+        },
     },
     { timestamps: true }
 );

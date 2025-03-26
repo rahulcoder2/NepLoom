@@ -20,9 +20,9 @@ app.use(
 // express middleware setting for request rate limit.
 app.use(express.json({ limit: '20kb' }));
 app.use(express.urlencoded({ extended: true, limit: '20kb' }));
+app.use(express.static('public'));
 
 app.use(cookieParser());
-
 
 app.get('/', (req, res) => {
     res.send('hello world');
@@ -30,16 +30,13 @@ app.get('/', (req, res) => {
 
 // Import routes
 
-import userRouter from './routes/user.routes.js'
-import categoryRouter from './routes/category.routes.js'
+import userRouter from './routes/user.routes.js';
+import categoryRouter from './routes/category.routes.js';
+import productRouter from './routes/product.routes.js'
 
-
-// routes declaration 
-app.use('/api/user', userRouter)
+// routes declaration
+app.use('/api/user', userRouter);
 app.use('/api/categories', categoryRouter);
-
-
-
-
+app.use('/api/products', productRouter);
 
 export { httpServer };
