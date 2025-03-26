@@ -20,3 +20,13 @@ export const getMongoosePaginationOptions = ({
         },
     };
 };
+
+/**
+ * Generates a random number between 0 (inclusive) and a specified maximum value (exclusive).
+ * 
+ * @param {number|string} max - The upper bound (exclusive) for the random number. It can be either a number or a string that can be converted to a number.
+ * @returns {number} A random number between 0 (inclusive) and `max` (exclusive).
+ */
+export const getRandomNumber = (max) => {
+    return (Math.random() * max);
+}
