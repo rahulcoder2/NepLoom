@@ -44,7 +44,7 @@ export const uploadFileOnCloudinaryBylocalFilePath = async (
         return uploadFile;
     } catch (error) {
         // remove unuploadfile
-        console.error('Cloudinary upload error:', error);
+        // console.error('Cloudinary upload error:', error);
         fs.unlinkSync(localFilePath);
         return null;
     }

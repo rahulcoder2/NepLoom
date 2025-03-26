@@ -32,7 +32,7 @@ app.get('/', (req, res) => {
 
 import userRouter from './routes/user.routes.js';
 import categoryRouter from './routes/category.routes.js';
-import productRouter from './routes/product.routes.js'
+import productRouter from './routes/product.routes.js';
 
 // routes declaration
 app.use('/api/user', userRouter);
