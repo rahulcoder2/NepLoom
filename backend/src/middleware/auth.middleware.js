@@ -1,6 +1,6 @@
-import { AvailableUserRoles } from '../constants';
-import { User } from '../models/user.models';
-import { asyncHandle } from '../utils/asyncHandler';
+import { AvailableUserRoles } from '../constants.js';
+import { User } from '../models/user.models.js';
+import { asyncHandle } from '../utils/asyncHandler.js';
 import jwt from 'jsonwebtoken';
 
 export const verifyjwt = asyncHandle((req, res, next) => {
@@ -46,23 +46,22 @@ export const verifyjwt = asyncHandle((req, res, next) => {
  * * So, in future if we have a route which can be accessible by multiple roles, we can achieve that with this middleware
  */
 
-
-export const verfiyPermission = (roles=[])=>{
-    asyncHandle(async (req, res, next) => {
-        // check user id 
-        if(!req.user._id){
+export const verifyPermission = (roles = []) => {
+    return asyncHandle(async (req, res, next) => {
+        // Check if user is authenticated (i.e., req.user is populated)
+        if (!req.user || !req.user._id) {
             return res.status(401).json({
-                message: "Unauthorized request"
-            })
+                message: 'Unauthorized request',
+            });
         }
 
-        if(roles.includes(req.user?._id)){
-            next();
-        }else{
+        // Check if the user role is in the allowed roles
+        if (roles.includes(req.user.role)) {
+            return next();
+        } else {
             return res.status(403).json({
-                message: "Your role is not allowed to perform this action."
-            })
+                message: 'Your role is not allowed to perform this action.',
+            });
         }
-
-    })
-}
+    });
+};
