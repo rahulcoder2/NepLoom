@@ -3,7 +3,7 @@ import { User } from '../models/user.models.js';
 import { asyncHandle } from '../utils/asyncHandler.js';
 import jwt from 'jsonwebtoken';
 
-export const verifyjwt = asyncHandle((req, res, next) => {
+export const verifyjwt = asyncHandle(async (req, res, next) => {
     const token =
         req.cookies?.accessToken ||
         req.header('Authorization')?.replace('Bearer ', '');
@@ -17,13 +17,13 @@ export const verifyjwt = asyncHandle((req, res, next) => {
     try {
         const decodedToken = jwt.decode(token, process.env.ACCESS_TOKEN_SECRET);
 
-        const user = User.findById(decodedToken?._id).select(
+        const user = await User.findById(decodedToken?._id).select(
             '-password -refreshToken'
         );
 
         if (!user) {
             res.status(401).json({
-                message: 'Invalid acess token',
+                message: 'Invalid access token',
             });
         }
         req.user = user;
@@ -35,10 +35,6 @@ export const verifyjwt = asyncHandle((req, res, next) => {
     }
 });
 
-
-
-
-
 /**
  * @param {AvailableUserRoles} roles
  * @description
@@ -46,22 +42,18 @@ export const verifyjwt = asyncHandle((req, res, next) => {
  * * So, in future if we have a route which can be accessible by multiple roles, we can achieve that with this middleware
  */
 
-export const verifyPermission = (roles = []) => {
-    return asyncHandle(async (req, res, next) => {
-        // Check if user is authenticated (i.e., req.user is populated)
-        if (!req.user || !req.user._id) {
+export const verifyPermission = (roles = []) =>
+    asyncHandle(async (req, res, next) => {
+        if (!req.user?._id) {
             return res.status(401).json({
-                message: 'Unauthorized request',
+                message: 'Unauthorized ',
             });
         }
-
-        // Check if the user role is in the allowed roles
-        if (roles.includes(req.user.role)) {
-            return next();
+        if (roles.includes(req.user?.role)) {
+            next();
         } else {
             return res.status(403).json({
                 message: 'Your role is not allowed to perform this action.',
             });
         }
     });
-};

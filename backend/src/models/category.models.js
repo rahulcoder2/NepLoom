@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import aggregatePaginate from 'mongoose-aggregate-paginate-v2';
+import mongooseAggregatePaginate from 'mongoose-aggregate-paginate-v2';
 const { Schema, model } = mongoose;
 
 const categorySchema = new Schema(
@@ -27,6 +27,6 @@ const categorySchema = new Schema(
 );
 
 // Pagination plugin
-categorySchema.plugin(aggregatePaginate);
+categorySchema.plugin(mongooseAggregatePaginate);
 
 export const Category = model('Category', categorySchema);

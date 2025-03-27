@@ -13,10 +13,15 @@ export const createCategory = asyncHandle(async (req, res) => {
     });
 
     // save in db
-    await newcategory.save();
+    const category = await newcategory.save();
 
+    if (!category) {
+        return res.status(404).json({
+            message: 'category is not found',
+        });
+    }
     return res.status(201).json({
-        newcategory,
+        category,
         message: 'Category created successfully',
     });
 });

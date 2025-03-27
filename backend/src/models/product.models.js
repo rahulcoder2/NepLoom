@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import mongooseAggregatePaginate from 'mongoose-aggregate-paginate-v2';
 const { Schema, model } = mongoose;
 
 const productSchema = new Schema(
@@ -24,7 +25,6 @@ const productSchema = new Schema(
         },
         discountPrice: {
             type: Number,
-            required: [true, 'Please add a discountPrice'],
             min: [0, 'Price must be non-negative'],
         },
         stock: {
@@ -56,5 +56,7 @@ const productSchema = new Schema(
     },
     { timestamps: true }
 );
+
+productSchema.plugin(mongooseAggregatePaginate);
 
 export const Product = model('Product', productSchema);

@@ -1,70 +1,174 @@
 import { asyncHandle } from '../utils/asyncHandler.js';
 import { Category } from '../models/category.models.js';
-import { uploadFileOnCloudinaryBylocalFilePath } from '../utils/cloudinaryFileUploder.js';
 import { Product } from '../models/product.models.js';
+import {
+    uploadFileOnCloudinaryBylocalFilePath,
+    deleteFileFromCloudinary,
+    getPublicIdFromUrl,
+} from '../utils/cloudinary.js';
+import { getMongoosePaginationOptions } from '../utils/helpers.js';
 
+// ✅ Create Product
 export const createProduct = asyncHandle(async (req, res) => {
-    // get data from create product form
-    const { title, description, category, price, stock } = req.body();
+    const { name, description, category, price, stock } = req.body;
 
-    // find category and added or not
-    const categoryToAdded = await Category.findById(categories);
-
+    // Validate category
+    const categoryToAdded = await Category.findById(category);
     if (!categoryToAdded) {
-        return res.status(404).json({
-            message: 'Category does not exist',
-        });
+        return res.status(404).json({ message: 'Category does not exist' });
     }
 
-    // get product image from local path and check
-    const imageLocalPath = req.files?.image[0]?.path;
+    // Validate image upload
+    const imageLocalPath = req.files?.image?.[0]?.path;
     if (!imageLocalPath) {
-        return res.status(400).json({
-            message: 'Image field is required',
-        });
+        return res.status(400).json({ message: 'Image field is required' });
     }
 
-    // upload localImage on sdk cdn and check
-    const image = await uploadFileOnCloudinaryBylocalFilePath(
+    // Upload image to Cloudinary
+    const uploadedImage = await uploadFileOnCloudinaryBylocalFilePath(
         imageLocalPath,
-        productImage
+        'productImage'
     );
-
-    if (!image) {
-        return res.status(400).json({
-            message: 'Image is required',
-        });
+    if (!uploadedImage) {
+        return res.status(400).json({ message: 'Failed to upload image' });
     }
-    // req user
-    const owner = req.user?._id;
 
-    // create product, save and check
+    // Create product
+    const owner = req.user?._id;
     const newProduct = new Product({
-        title,
+        name,
         description,
         category,
         price,
-        image: {
-            url: image.url,
-        },
+        image: { url: uploadedImage.url },
         owner,
         stock,
     });
 
-    await newProduct.save();
-
-    if (!newProduct) {
-        return res.status(500).json({
-            message: 'Something went wrong while creating the new product',
-        });
+    const product = await newProduct.save();
+    if (!product) {
+        return res.status(500).json({ message: 'Failed to create product' });
     }
 
-    return res.status(201).json({
-        newProduct,
-        message: 'Product created successfully',
+    return res
+        .status(201)
+        .json({ product, message: 'Product created successfully' });
+});
+
+// ✅ Get All Product
+export const getAllProducts = asyncHandle(async (req, res) => {
+    const { page = 1, limit = 12 } = req.query;
+
+    const productAggregate = Product.aggregate([{ $match: {} }]);
+
+    const products = await Product.aggregatePaginate(
+        productAggregate,
+        getMongoosePaginationOptions({
+            page,
+            limit,
+            customLabels: {
+                totalDocs: 'totalProducts',
+                docs: 'products',
+            },
+        })
+    );
+
+    return res.status(200).json({
+        products,
+        message: 'Products fetched successfully',
     });
 });
 
+// ✅ Get Product ById
+export const getProductById = asyncHandle(async (req, res) => {
+    const { productId } = req.params;
+
+    const product = await Product.findById(productId);
+
+    if (!product) {
+        return res.status(404).json({
+            product,
+            message: 'Product does not exist.',
+        });
+    }
+
+    return res.status(200).json({
+        product,
+        message: 'Product fetch successfully',
+    });
+});
+
+// ✅ Get All Product By Category
+export const getProductsByCategory = asyncHandle(async (req, res) => {});
+
+// ✅ Update Product
 export const updateProduct = asyncHandle(async (req, res) => {
-    
-})
+    const { productId } = req.params;
+    const { name, description, stock, price, category } = req.body;
+
+    // Find existing product
+    const product = await Product.findById(productId);
+    if (!product) {
+        return res.status(404).json({ message: 'Product does not exist' });
+    }
+
+    // Handle image update
+    let newImageUrl = product.image.url; // Keep old image by default
+    const imageLocalPath = req.files?.image?.[0]?.path;
+
+    if (imageLocalPath) {
+        // Upload new image
+        const uploadedImage = await uploadFileOnCloudinaryBylocalFilePath(
+            imageLocalPath,
+            'productImage'
+        );
+        if (uploadedImage) {
+            newImageUrl = uploadedImage.url;
+
+            // Delete old image
+            const publicId = getPublicIdFromUrl(product.image.url);
+            if (publicId) await deleteFileFromCloudinary(publicId);
+        }
+    }
+
+    // Update product details
+    const updatedProduct = await Product.findByIdAndUpdate(
+        productId,
+        {
+            $set: {
+                name,
+                description,
+                stock,
+                price,
+                category,
+                image: { url: newImageUrl },
+            },
+        },
+        { new: true }
+    );
+
+    return res.status(200).json({
+        product: updatedProduct,
+        message: 'Product updated successfully',
+    });
+});
+
+// ✅ Delete Product
+export const deleteProduct = asyncHandle(async (req, res) => {
+    const { productId } = req.params;
+
+    // Find product before deleting
+    const product = await Product.findById(productId);
+    if (!product) {
+        return res.status(404).json({ message: 'Product does not exist' });
+    }
+
+    // Delete product image from Cloudinary
+    const publicId = getPublicIdFromUrl(product.image.url);
+    if (publicId) await deleteFileFromCloudinary(publicId);
+
+    // Delete product from database
+    await Product.findByIdAndDelete(productId);
+
+    return res.status(200).json({ message: 'Product deleted successfully' });
+});
