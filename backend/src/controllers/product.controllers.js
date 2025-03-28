@@ -7,6 +7,7 @@ import {
     getPublicIdFromUrl,
 } from '../utils/cloudinary.js';
 import { getMongoosePaginationOptions } from '../utils/helpers.js';
+import mongoose from 'mongoose';
 
 // ✅ Create Product
 export const createProduct = asyncHandle(async (req, res) => {
@@ -99,7 +100,43 @@ export const getProductById = asyncHandle(async (req, res) => {
 });
 
 // ✅ Get All Product By Category
-export const getProductsByCategory = asyncHandle(async (req, res) => {});
+export const getProductsByCategory = asyncHandle(async (req, res) => {
+    const { page = 1, limit = 8 } = req.query;
+    const { categoryId } = req.params;
+
+    const category = await Category.findById(categoryId).select('name _id');
+
+    if (!category) {
+        return res.status(404).json({ message: 'Category does not exist' });
+    }
+
+    const productAggregate = Product.aggregate([
+        {
+            // match the products with provided category
+            $match: {
+                category: new mongoose.Types.ObjectId(categoryId),
+            },
+        },
+    ]);
+
+    const products = await Product.aggregatePaginate(
+        productAggregate,
+        getMongoosePaginationOptions({
+            page,
+            limit,
+            customLabels: {
+                totalDocs: 'totalProducts',
+                docs: 'products',
+            },
+        })
+    );
+
+    return res.status(200).json({
+        products,
+        category,
+        message: 'Category products fetched successfully',
+    });
+});
 
 // ✅ Update Product
 export const updateProduct = asyncHandle(async (req, res) => {
