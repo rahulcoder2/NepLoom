@@ -8,7 +8,7 @@ import { useState, useEffect } from "react";
  * @param {number} [threshold=10] - The scroll threshold in pixels.
  * @returns {boolean} - Returns true if the user has scrolled past the threshold, false otherwise.
  */
-export function useScroll(threshold: number = 10): boolean {
+export function useIsScroll(threshold: number = 10): boolean {
   const [isScrolled, setIsScrolled] = useState<boolean>(false);
 
   useEffect(() => {

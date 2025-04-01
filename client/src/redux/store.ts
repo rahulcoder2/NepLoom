@@ -12,11 +12,13 @@ import {
 } from "redux-persist/es/constants";
 
 import logger from "redux-logger";
+import authReducer from "./features/auth/auth-slice";
 import CartReducer from "./features/cart/cart-slice";
 
 const rootReducer = combineReducers({
   // Add reducers here
-  cart: CartReducer
+  auth: authReducer,
+  cart: CartReducer,
 });
 
 // Configure Redux Persist

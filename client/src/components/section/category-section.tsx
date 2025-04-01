@@ -1,5 +1,6 @@
 'use client'
-import useMobile from "@/hooks/use-mobile";
+
+import { useIsMobile } from "@/hooks/use-mobile";
 import { CategoryMobile } from "./category-mobile";
 import { CategoryDesktop } from "./category-desktop";
 
@@ -8,7 +9,7 @@ interface CategorySectionProps {
 }
 
 export default function CategorySection({ categories }: CategorySectionProps) {
-  const isMobile = useMobile();
+  const isMobile = useIsMobile();
 
   return (
     <>

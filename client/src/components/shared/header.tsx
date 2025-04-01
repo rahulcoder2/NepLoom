@@ -4,12 +4,12 @@ import { ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Container from "./container";
-import { useScroll } from "@/hooks/use-scroll";
+import { useIsScroll } from "@/hooks/use-scroll";
 import UserButton from "./user-button";
 import SearchBar from "./search-bar";
 
 export default function Header() {
-  const scrolled = useScroll();
+  const scrolled = useIsScroll();
 
   return (
     <header
