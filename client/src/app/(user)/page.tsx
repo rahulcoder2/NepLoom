@@ -1,5 +1,4 @@
 import CategorySection from "@/components/section/category-section";
-import FlashSaleSection from "@/components/section/flash-sale-section";
 import HeroCarousel from "@/components/section/hero-carousel";
 import ProductSection from "@/components/section/product-section";
 import Container from "@/components/shared/container";
@@ -14,25 +13,13 @@ export default function HomePage() {
         <HeroCarousel />
       </div>
 
-      {/* flash sale */}
-      <div className="mb-8">
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-2xl font-bold">Flash Sale</h2>
-          <Link
-            href="/flash-sale"
-            className="flex items-center gap-1 text-primary hover:underline"
-          >
-            View All <ArrowRight size={16} />
-          </Link>
-        </div>
-        <FlashSaleSection />
-      </div>
+      {/* Categories Section */}
       <div className="mb-8">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-2xl font-bold">Categories</h2>
           <Link
             href="/categories"
-            className="flex items-center gap-1 text-[#FF5722] hover:underline"
+            className="flex items-center gap-1 text-primary hover:underline"
           >
             Browse All <ArrowRight size={16} />
           </Link>
@@ -87,7 +74,7 @@ export default function HomePage() {
           <h2 className="text-2xl font-bold">Explore Product</h2>
           <Link
             href={"/products"}
-            className="flex items-center gap-1 text-[#FF5722] hover:underline"
+            className="flex items-center gap-1 text-primary hover:underline"
           >
             View All <ArrowRight size={16} />
           </Link>

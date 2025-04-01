@@ -4,8 +4,7 @@ import "./globals.css";
 import ReduxProvider from "@/redux/redux-provider";
 
 import { Toaster } from "@/components/ui/sonner";
-import Header from "@/components/shared/header";
-import Footer from "@/components/shared/footer";
+import { ThemeProvider } from "@/components/shared/theme-provider";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -32,18 +31,23 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${inter.variable} ${poppins.variable} font-poppins antialiased`}
       >
-        <ReduxProvider>
-          <div className="relative flex min-h-screen flex-col">
-            <Header />
-            <main className="flex-1">{children}</main>
-            <Footer/>
-          </div>
-          <Toaster />
-        </ReduxProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <ReduxProvider>
+            <div className="relative flex min-h-screen flex-col">
+              <main className="flex-1">{children}</main>
+            </div>
+            <Toaster />
+          </ReduxProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
