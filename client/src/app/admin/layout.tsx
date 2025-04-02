@@ -1,6 +1,5 @@
 import AdminHeader from "@/components/shared/admin-header";
 import AdminSidebar from "@/components/shared/admin-sidebar";
-import Container from "@/components/shared/container";
 import { SidebarProvider } from "@/components/ui/sidebar";
 
 interface AdminLayoutProps {
@@ -14,9 +13,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         <AdminHeader />
         <div className="flex gap-2">
           <AdminSidebar />
-          <main>
-            <Container>{children}</Container>
-          </main>
+          <main className="flex flex-col w-full">{children}</main>
         </div>
       </div>
     </SidebarProvider>

@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import CategoryCard from "../shared/category-card";
+import CategoryCard from "../../shared/category-card";
 
 export interface CategoryDesktopProps {
   categories: {

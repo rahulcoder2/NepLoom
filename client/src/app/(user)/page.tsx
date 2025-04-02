@@ -1,6 +1,6 @@
-import CategorySection from "@/components/section/category-section";
-import HeroCarousel from "@/components/section/hero-carousel";
-import ProductSection from "@/components/section/product-section";
+import CategorySection from "@/components/(user)/section/category-section";
+import HeroCarousel from "@/components/(user)/section/hero-carousel";
+import ProductSection from "@/components/(user)/section/product-section";
 import Container from "@/components/shared/container";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";

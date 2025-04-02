@@ -1,10 +1,9 @@
-
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
-import CategoryCard from "../shared/category-card";
+import CategoryCard from "../../shared/category-card";
 
 export interface CategoryMobileProps {
   categories: {
@@ -19,11 +18,8 @@ export function CategoryMobile({ categories }: CategoryMobileProps) {
     <Carousel opts={{ dragFree: true }} className="w-full">
       <CarouselContent className="-ml-2 ">
         {categories.map((category) => (
-          <CarouselItem
-            key={category._id}
-            className="pl-2 basis-1/3"
-          >
-           <CategoryCard category={category} />
+          <CarouselItem key={category._id} className="pl-2 basis-1/3">
+            <CategoryCard category={category} />
           </CarouselItem>
         ))}
       </CarouselContent>

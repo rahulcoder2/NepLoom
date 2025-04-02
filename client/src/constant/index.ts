@@ -1,3 +1,5 @@
+import { Image, LayoutDashboard, List, ShoppingBag, ShoppingCart, Users } from "lucide-react";
+
 // Constants for Footer Links
 export const SHOP_LINKS = [
   { label: "Traditional Wear", href: "/category/traditional" },
@@ -19,4 +21,37 @@ export const CUSTOMER_SERVICE_LINKS = [
   { label: "Returns & Exchanges", href: "/returns" },
   { label: "Terms & Conditions", href: "/terms" },
   { label: "Privacy Policy", href: "/privacy" },
+];
+
+export const ADMIN_NAV_ITEMS = [
+  {
+    title: "Dashboard",
+    url: "/admin/dashboard",
+    icon: LayoutDashboard,
+  },
+  {
+    title: "Home Banner",
+    url: "/admin/homebanner",
+    icon: Image,
+  },
+  {
+    title: "Products",
+    url: "/admin/products",
+    icon: ShoppingBag,
+  },
+  {
+    title: "Categories",
+    url: "/admin/categories",
+    icon: List,
+  },
+  {
+    title: "Orders",
+    url: "/admin/orders",
+    icon: ShoppingCart,
+  },
+  {
+    title: "Customers",
+    url: "/admin/customers",
+    icon: Users,
+  },
 ];

@@ -21,7 +21,7 @@ export default function AdminHeader() {
           {/* Sidebar Trigger */}
           <SidebarTrigger className="text-white hover:text-primary" />
           {/* Logo */}
-          <Link href="/admin" className="flex items-center gap-2">
+          <Link href="/admin/dashboard" className="flex items-center gap-2">
             <span className="text-xl font-bold text-white">Neploom</span>
           </Link>
         </div>

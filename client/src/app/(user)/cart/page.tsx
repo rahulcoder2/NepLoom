@@ -1,4 +1,4 @@
-import Container from '@/components/shared/container'
+import Container from "@/components/shared/container";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -7,7 +7,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Slash } from 'lucide-react';
+import { Slash } from "lucide-react";
 
 const page = () => {
   return (
@@ -26,11 +26,9 @@ const page = () => {
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
-
-        
       </Container>
     </div>
   );
-}
+};
 
-export default page
+export default page;

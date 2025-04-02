@@ -1,5 +1,3 @@
-import { List, ShoppingBag, ShoppingCart, Users } from "lucide-react";
-
 import {
   Sidebar,
   SidebarContent,
@@ -13,36 +11,14 @@ import {
 } from "@/components/ui/sidebar";
 import Link from "next/link";
 import { Separator } from "../ui/separator";
-
-const AdminNavItems = [
-  {
-    title: "Products",
-    url: "/admin/products",
-    icon: ShoppingBag,
-  },
-  {
-    title: "Categories",
-    url: "/admin/categories",
-    icon: List,
-  },
-  {
-    title: "Orders",
-    url: "/admin/orders",
-    icon: ShoppingCart,
-  },
-  {
-    title: "Customers",
-    url: "/admin/customers",
-    icon: Users,
-  },
-];
+import { ADMIN_NAV_ITEMS } from "@/constant";
 
 export default function AdminSidebar() {
   return (
     <Sidebar>
       <SidebarHeader className="my-1">
         <div className="flex items-center justify-between px-2 gap-2">
-          <Link href={"/admin"}>
+          <Link href={"/admin/dashboard"}>
             <span className="text-3xl font-bold text-primary">Neploom</span>
           </Link>
           <SidebarTrigger className="text-primary hover:text-primary" />
@@ -53,11 +29,11 @@ export default function AdminSidebar() {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              {AdminNavItems.map((item) => (
+              {ADMIN_NAV_ITEMS.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
                     asChild
-                    className="h-14 text-primary hover:bg-primary hover:text-white active:text-white active:bg-primary"
+                    className="h-14 hover:bg-primary hover:text-white active:text-white active:bg-primary"
                   >
                     <Link href={item.url}>
                       <item.icon />

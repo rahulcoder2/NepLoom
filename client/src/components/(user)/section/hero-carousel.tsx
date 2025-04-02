@@ -9,9 +9,9 @@ import {
 } from "@/components/ui/carousel";
 import { useEffect, useRef, useState } from "react";
 import { type CarouselApi } from "@/components/ui/carousel";
-import Autoplay from 'embla-carousel-autoplay';
+import Autoplay from "embla-carousel-autoplay";
 import Image from "next/image";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 
 // Carousel data
 const carouselItems = [
@@ -73,28 +73,26 @@ const carouselItems = [
 ];
 
 export default function HeroCarousel() {
-    const plugin = useRef(
-      Autoplay({ delay: 2000, stopOnInteraction: true })
-    );
+  const plugin = useRef(Autoplay({ delay: 2000, stopOnInteraction: true }));
 
-    const [api, setApi] = useState<CarouselApi>();
-    const [current, setCurrent] = useState(0);
-    const [count, setCount] = useState(0);
+  const [api, setApi] = useState<CarouselApi>();
+  const [current, setCurrent] = useState(0);
+  const [count, setCount] = useState(0);
 
-    useEffect(() => {
-      if (!api) {
-        return;
-      }
+  useEffect(() => {
+    if (!api) {
+      return;
+    }
 
-      setCount(api.scrollSnapList().length);
+    setCount(api.scrollSnapList().length);
+    setCurrent(api.selectedScrollSnap() + 1);
+
+    api.on("select", () => {
       setCurrent(api.selectedScrollSnap() + 1);
+    });
+  }, [api]);
 
-      api.on("select", () => {
-        setCurrent(api.selectedScrollSnap() + 1);
-      });
-    }, [api]);
-
-    const goToSlide = (index: number) => {
+  const goToSlide = (index: number) => {
     if (api) {
       api.scrollTo(index);
     }
