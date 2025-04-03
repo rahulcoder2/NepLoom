@@ -43,12 +43,22 @@ const productSchema = new Schema(
             ref: 'Category',
             required: true,
         },
+        categoryName:{
+            type: String,
+            required: true,
+        },
         ratings: {
             type: Number,
             default: 0,
             min: [0, 'Rating must be at least 0'],
             max: [5, 'Rating cannot be more than 5'],
         },
+        size:[
+            {
+                type: String,
+                required: true,
+            },
+        ],
         owner: {
             type: Schema.Types.ObjectId,
             ref: 'User',

@@ -4,6 +4,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import { rateLimit } from 'express-rate-limit';
 import requestIp from 'request-ip';
+import morgan from 'morgan';
 
 const app = express();
 
@@ -49,6 +50,8 @@ app.use(express.static('public'));
 
 app.use(cookieParser());
 
+app.use(morgan('dev'));
+
 app.get('/', (req, res) => {
     res.send('hello world');
 });
@@ -58,10 +61,15 @@ app.get('/', (req, res) => {
 import userRouter from './routes/user.routes.js';
 import categoryRouter from './routes/category.routes.js';
 import productRouter from './routes/product.routes.js';
+import addressRouter from './routes/address.routes.js';
+import cartRouter from './routes/cart.routes.js';
 
 // routes declaration
 app.use('/api/user', userRouter);
 app.use('/api/categories', categoryRouter);
 app.use('/api/products', productRouter);
+app.use('/api/cart', cartRouter);
+app.use('/api/addresses', addressRouter);
+
 
 export { httpServer };

@@ -56,30 +56,8 @@ const orderSchema = new Schema(
             default: [],
         },
         address: {
-            addressLine1: {
-                required: true,
-                type: String,
-            },
-            addressLine2: {
-                type: String,
-            },
-            city: {
-                required: true,
-                type: String,
-            },
-            province: {
-                required: true,
-                type: String,
-            },
-            pincode: {
-                required: true,
-                type: String,
-            },
-            country: {
-                required: true,
-                type: String,
-                default: 'Nepal',
-            },
+            type: Schema.Types.ObjectId,
+            ref: 'Address',
         },
         status: {
             type: String,

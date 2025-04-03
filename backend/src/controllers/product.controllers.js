@@ -11,7 +11,8 @@ import mongoose from 'mongoose';
 
 // ✅ Create Product
 export const createProduct = asyncHandle(async (req, res) => {
-    const { name, description, category, price, stock } = req.body;
+    const { name, description, category, price, stock, size, discountPrice } =
+        req.body;
 
     // Validate category
     const categoryToAdded = await Category.findById(category);
@@ -40,10 +41,13 @@ export const createProduct = asyncHandle(async (req, res) => {
         name,
         description,
         category,
+        categoryName: categoryToAdded.name,
         price,
         image: { url: uploadedImage.url },
         owner,
         stock,
+        size: size || [],
+        discountPrice: discountPrice || 0, 
     });
 
     const product = await newProduct.save();
@@ -141,12 +145,22 @@ export const getProductsByCategory = asyncHandle(async (req, res) => {
 // ✅ Update Product
 export const updateProduct = asyncHandle(async (req, res) => {
     const { productId } = req.params;
-    const { name, description, stock, price, category } = req.body;
+    const { name, description, stock, price, category, size } = req.body;
 
     // Find existing product
     const product = await Product.findById(productId);
     if (!product) {
         return res.status(404).json({ message: 'Product does not exist' });
+    }
+
+    let categoryNameToUse = product.categoryName;
+    if (category) {
+        const categoryToUpdate = await Category.findById(category);
+        if (categoryToUpdate) {
+            categoryNameToUse = categoryToUpdate.name;
+        } else {
+            return res.status(404).json({ message: 'Category does not exist' });
+        }
     }
 
     // Handle image update
@@ -178,7 +192,13 @@ export const updateProduct = asyncHandle(async (req, res) => {
                 stock,
                 price,
                 category,
+                categoryName: categoryNameToUse,
                 image: { url: newImageUrl },
+                size: size || product.size,
+                discountPrice:
+                    discountPrice !== undefined
+                        ? discountPrice
+                        : product.discountPrice,
             },
         },
         { new: true }

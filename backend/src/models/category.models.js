@@ -11,12 +11,8 @@ const categorySchema = new Schema(
             unique: true, 
             index: true,
         },
-        icon: {
+        image: {
             type: String
-        },
-        description: {
-            type: String,
-            trim: true,
         },
         owner: {
             type: Schema.Types.ObjectId,
