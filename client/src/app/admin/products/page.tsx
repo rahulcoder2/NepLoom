@@ -4,25 +4,28 @@ import { columns } from "@/components/(admin)/product/table/columns";
 import { ProductDataTable } from "@/components/(admin)/product/table/product-data-table";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const AdminProductsPage = () => {
-  const products = [
-    {
-      id: "1",
-      name: "Product 1",
-      price: 100,
-      category: "Category 1",
-      stock: 50,
-    },
-    {
-      id: "2",
-      name: "Product 2",
-      price: 200,
-      category: "Category 2",
-      stock: 30,
-    },
-    // Add more products as needed
-  ];
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [products, setProducts] = useState([]); // Initialize products state
+
+  useEffect(() => {
+    const getProducts = async () => {
+      try {
+        const response = await axios.get("http://localhost:8000/api/products");
+        setProducts(response.data?.products?.products); 
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+
+    getProducts(); // Call the function to fetch products
+
+    // No cleanup needed in this case, so remove the return statement.
+  }, []); // Empty dependency array ensures it runs only once on mount
+
   return (
     <div className="w-full mt-6">
       <Container>

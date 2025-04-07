@@ -7,35 +7,30 @@ import {
     getPublicIdFromUrl,
 } from '../utils/cloudinary.js';
 
+// Create Category
 export const createCategory = asyncHandle(async (req, res) => {
     const { name } = req.body;
 
-    // Validate image upload
     const imageLocalPath = req.files?.image?.[0]?.path;
     if (!imageLocalPath) {
         return res.status(400).json({ message: 'Image field is required' });
     }
 
-    // Upload image to Cloudinary
     const uploadedImage = await uploadFileOnCloudinaryBylocalFilePath(
         imageLocalPath,
         'categoryImage'
     );
     if (!uploadedImage) {
-        return res.status(400).json({ message: 'Failed to upload image' });
+        return res.status(500).json({ message: 'Failed to upload image' });
     }
 
     const newCategory = new Category({
         name,
-        image: uploadedImage.url,
+        image: { url: uploadedImage.url },
         owner: req.user._id,
     });
 
     const category = await newCategory.save();
-
-    if (!category) {
-        return res.status(500).json({ message: 'Failed to create category' });
-    }
 
     return res.status(201).json({
         category,
@@ -43,8 +38,10 @@ export const createCategory = asyncHandle(async (req, res) => {
     });
 });
 
+// Get All Categories (Paginated)
 export const getAllCategories = asyncHandle(async (req, res) => {
-    const { page = 1, limit = 8 } = req.query;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 8;
 
     const categoryAggregate = Category.aggregate([{ $match: {} }]);
 
@@ -66,11 +63,11 @@ export const getAllCategories = asyncHandle(async (req, res) => {
     });
 });
 
+// Get Category by ID
 export const getCategoryById = asyncHandle(async (req, res) => {
     const { categoryId } = req.params;
 
-    const category = await Category.findById(categoryId);
-
+    const category = await Category.findById(categoryId).lean();
     if (!category) {
         return res.status(404).json({ message: 'Category does not exist' });
     }
@@ -81,6 +78,7 @@ export const getCategoryById = asyncHandle(async (req, res) => {
     });
 });
 
+// Update Category
 export const updateCategoryById = asyncHandle(async (req, res) => {
     const { categoryId } = req.params;
     const { name } = req.body;
@@ -90,7 +88,7 @@ export const updateCategoryById = asyncHandle(async (req, res) => {
         return res.status(404).json({ message: 'Category does not exist' });
     }
 
-    let newImageUrl = category.image?.url; // Keep old image by default
+    let newImageUrl = category.image?.url;
     const imageLocalPath = req.files?.image?.[0]?.path;
 
     if (imageLocalPath) {
@@ -101,8 +99,8 @@ export const updateCategoryById = asyncHandle(async (req, res) => {
         if (uploadedImage) {
             newImageUrl = uploadedImage.url;
 
-            const publicId = getPublicIdFromUrl(category.image?.url);
-            if (publicId) await deleteFileFromCloudinary(publicId);
+            const oldPublicId = getPublicIdFromUrl(category.image?.url);
+            if (oldPublicId) await deleteFileFromCloudinary(oldPublicId);
         }
     }
 
@@ -111,6 +109,7 @@ export const updateCategoryById = asyncHandle(async (req, res) => {
         {
             $set: {
                 name,
+                owner: req.user._id,
                 image: { url: newImageUrl },
             },
         },
@@ -123,6 +122,7 @@ export const updateCategoryById = asyncHandle(async (req, res) => {
     });
 });
 
+// Delete Category
 export const deleteCategoryById = asyncHandle(async (req, res) => {
     const { categoryId } = req.params;
 

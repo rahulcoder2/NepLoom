@@ -24,50 +24,7 @@ export default function HomePage() {
             Browse All <ArrowRight size={16} />
           </Link>
         </div>
-        <CategorySection
-          categories={[
-            {
-              _id: 1,
-              name: "Electronics",
-              icon: "/electronics.svg",
-            },
-            {
-              _id: 2,
-              name: "Clothing",
-              icon: "/clothing.svg",
-            },
-            {
-              _id: 3,
-              name: "Furniture",
-              icon: "/furniture.svg",
-            },
-            {
-              _id: 4,
-              name: "Books",
-              icon: "/books.svg",
-            },
-            {
-              _id: 5,
-              name: "Sports",
-              icon: "/sports.svg",
-            },
-            {
-              _id: 6,
-              name: "Beauty",
-              icon: "/beauty.svg",
-            },
-            {
-              _id: 7,
-              name: "Grocery",
-              icon: "/grocery.svg",
-            },
-            {
-              _id: 8,
-              name: "Automotive",
-              icon: "/automotive.svg",
-            },
-          ]}
-        />
+        <CategorySection />
       </div>
       <div className="mb-8">
         <div className="mb-4 flex items-center justify-between">

@@ -8,19 +8,23 @@ const categorySchema = new Schema(
             type: String,
             required: [true, 'Category name is required'],
             trim: true,
-            unique: true, 
+            unique: true,
             index: true,
         },
         image: {
-            type: String
+            url: {
+                type: String,
+                required: true,
+            },
         },
         owner: {
             type: Schema.Types.ObjectId,
-            ref: "User"
-        }
+            ref: 'User',
+        },
     },
     { timestamps: true }
 );
+
 
 // Pagination plugin
 categorySchema.plugin(mongooseAggregatePaginate);

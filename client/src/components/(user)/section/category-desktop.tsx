@@ -3,9 +3,11 @@ import CategoryCard from "../../shared/category-card";
 
 export interface CategoryDesktopProps {
   categories: {
-    _id: number;
+    _id: string;
     name: string;
-    icon: string;
+    image: {
+      url: string;
+    };
   }[];
 }
 

@@ -14,13 +14,23 @@ const router = Router();
 
 router
     .route('/')
-    .post(verifyjwt, verifyPermission([UserRolesEnum.ADMIN]), upload.fields([{ name: 'image', maxCount: 1 }]), createCategory) // Only Admin can create
+    .post(
+        verifyjwt,
+        verifyPermission([UserRolesEnum.ADMIN]),
+        upload.fields([{ name: 'image', maxCount: 1 }]),
+        createCategory
+    ) // Only Admin can create
     .get(getAllCategories);
 
 router
     .route('/:categoryId')
     .get(getCategoryById)
-    .put(verifyjwt, verifyPermission([UserRolesEnum.ADMIN]), updateCategoryById) // Only Admin can update
+    .put(
+        verifyjwt,
+        verifyPermission([UserRolesEnum.ADMIN]),
+        upload.fields([{ name: 'image', maxCount: 1 }]),
+        updateCategoryById
+    ) // Only Admin can update
     .delete(
         verifyjwt,
         verifyPermission([UserRolesEnum.ADMIN]),

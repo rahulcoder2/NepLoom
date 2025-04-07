@@ -145,7 +145,7 @@ export const getProductsByCategory = asyncHandle(async (req, res) => {
 // ✅ Update Product
 export const updateProduct = asyncHandle(async (req, res) => {
     const { productId } = req.params;
-    const { name, description, stock, price, category, size } = req.body;
+    const { name, description, stock, price, discountPrice, category, size } = req.body;
 
     // Find existing product
     const product = await Product.findById(productId);

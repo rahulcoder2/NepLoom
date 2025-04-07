@@ -38,7 +38,7 @@ const LoginForm = () => {
         // Check user role and redirect accordingly
         const { role } = res.data?.user
         if (role === "admin") {
-          router.push("/dashboard");
+          router.push("/admin/dashboard");
         } else {
           router.push("/");
         }
