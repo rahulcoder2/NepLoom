@@ -1,68 +1,89 @@
-import { Cart } from '../../../models/apps/ecommerce/cart.models.js';
-import { Coupon } from '../../../models/apps/ecommerce/coupon.models.js';
-import { Product } from '../../../models/apps/ecommerce/product.models.js';
-import { asyncHandler } from '../../../utils/asyncHandler.js';
+import { Cart } from '../models/cart.models.js';
+import { Product } from '../models/product.models.js';
+import { asyncHandle } from '../utils/asyncHandler.js';
 
-const getUserCart = asyncHandler(async (req, res) => {
-    const cart = await Cart.findOne({ owner: req.user._id })
-        .populate({ path: 'items.productId' })
-        .populate('coupon');
+const getCart = async (userId) => {
+    const cartAggregation = await Cart.aggregate([
+        { $match: { owner: userId } },
+        { $unwind: '$items' },
+        {
+            $lookup: {
+                from: 'products',
+                localField: 'items.productId',
+                foreignField: '_id',
+                as: 'product',
+            },
+        },
+        {
+            $project: {
+                product: { $first: '$product' },
+                quantity: '$items.quantity',
+                coupon: 1,
+            },
+        },
+        {
+            $group: {
+                _id: '$_id',
+                items: { $push: '$$ROOT' },
+                coupon: { $first: '$coupon' },
+                cartTotal: {
+                    $sum: { $multiply: ['$product.price', '$quantity'] },
+                },
+            },
+        },
+        {
+            $lookup: {
+                from: 'coupons',
+                localField: 'coupon',
+                foreignField: '_id',
+                as: 'coupon',
+            },
+        },
+        { $addFields: { coupon: { $first: '$coupon' } } },
+        {
+            $addFields: {
+                discountedTotal: {
+                    $ifNull: [
+                        {
+                            $subtract: ['$cartTotal', '$coupon.discountValue'],
+                        },
+                        '$cartTotal',
+                    ],
+                },
+            },
+        },
+    ]);
 
-    if (!cart) {
-        return res.status(404).json({ message: 'Cart not found' });
-    }
+    return (
+        cartAggregation[0] ?? {
+            _id: null,
+            items: [],
+            cartTotal: 0,
+            discountedTotal: 0,
+        }
+    );
+};
 
-    let cartTotal = 0;
-    cart.items.forEach((item) => {
-        cartTotal += item.productId.price * item.quantity;
-    });
-
-    let discountedTotal = cartTotal;
-    if (cart.coupon) {
-        discountedTotal = cartTotal - cart.coupon.discountValue;
-    }
-
-    const cartWithTotals = {
-        _id: cart._id,
-        items: cart.items.map((item) => ({
-            _id: item._id,
-            product: item.productId,
-            quantity: item.quantity,
-        })),
-        cartTotal,
-        discountedTotal,
-        coupon: cart.coupon,
-    };
-
-    return res.status(200).json({
-        data: cartWithTotals,
-        message: 'Cart fetched successfully',
-    });
-});
-
-const addItemOrUpdateItemQuantity = asyncHandler(async (req, res) => {
+export const addItemOrUpdateItemQuantity = asyncHandle(async (req, res) => {
     const { productId } = req.params;
     const { quantity = 1 } = req.body;
 
-    const cart = await Cart.findOne({ owner: req.user._id });
+    let cart = await Cart.findOne({ owner: req.user._id });
 
-    const product = await Product.findById(productId);
-
-    if (!product) {
-        return res.status(404).json({ message: 'Product does not exist' });
+    if (!cart) {
+        cart = await Cart.create({ owner: req.user._id, items: [] });
     }
 
-    if (quantity > product.stock) {
+    const product = await Product.findById(productId);
+    if (!product)
+        return res.status(404).json({ message: 'Product does not exist' });
+    if (quantity > product.stock)
         return res.status(400).json({
             message:
                 product.stock > 0
-                    ? 'Only ' +
-                      product.stock +
-                      ' products are remaining. But you are adding ' +
-                      quantity
+                    ? `Only ${product.stock} products are remaining. But you are adding ${quantity}`
                     : 'Product is out of stock',
         });
-    }
 
     const addedProduct = cart.items?.find(
         (item) => item.productId.toString() === productId
@@ -70,169 +91,53 @@ const addItemOrUpdateItemQuantity = asyncHandler(async (req, res) => {
 
     if (addedProduct) {
         addedProduct.quantity = quantity;
-        if (cart.coupon) {
-            cart.coupon = null;
-        }
+        if (cart.coupon) cart.coupon = null;
     } else {
-        cart.items.push({
-            productId,
-            quantity,
-        });
+        cart.items.push({ productId, quantity });
     }
 
     await cart.save({ validateBeforeSave: true });
+    const newCart = await getCart(req.user._id);
 
-    const updatedCart = await Cart.findOne({ owner: req.user._id })
-        .populate({ path: 'items.productId' })
-        .populate('coupon');
-
-    let cartTotal = 0;
-    updatedCart.items.forEach((item) => {
-        cartTotal += item.productId.price * item.quantity;
-    });
-
-    let discountedTotal = cartTotal;
-    if (updatedCart.coupon) {
-        discountedTotal = cartTotal - updatedCart.coupon.discountValue;
-    }
-
-    const cartWithTotals = {
-        _id: updatedCart._id,
-        items: updatedCart.items.map((item) => ({
-            _id: item._id,
-            product: item.productId,
-            quantity: item.quantity,
-        })),
-        cartTotal,
-        discountedTotal,
-        coupon: updatedCart.coupon,
-    };
-
-    return res.status(200).json({
-        data: cartWithTotals,
-        message: 'Item added successfully',
-    });
+    res.status(200).json({ data: newCart, message: 'Item added successfully' });
 });
 
-const removeItemFromCart = asyncHandler(async (req, res) => {
+export const getUserCart = asyncHandle(async (req, res) => {
+    const cart = await getCart(req.user._id);
+    res.status(200).json({ cart, message: 'Cart fetched successfully' });
+});
+
+export const removeItemFromCart = asyncHandle(async (req, res) => {
     const { productId } = req.params;
-
     const product = await Product.findById(productId);
-
-    if (!product) {
+    if (!product)
         return res.status(404).json({ message: 'Product does not exist' });
-    }
 
     const updatedCart = await Cart.findOneAndUpdate(
-        {
-            owner: req.user._id,
-        },
-        {
-            $pull: {
-                items: {
-                    productId: productId,
-                },
-            },
-        },
+        { owner: req.user._id },
+        { $pull: { items: { productId: productId } } },
         { new: true }
-    )
-        .populate({ path: 'items.productId' })
-        .populate('coupon');
+    );
+    let cart = await getCart(req.user._id);
 
-    let cartTotal = 0;
-    updatedCart.items.forEach((item) => {
-        cartTotal += item.productId.price * item.quantity;
-    });
-
-    let discountedTotal = cartTotal;
-    if (updatedCart.coupon) {
-        discountedTotal = cartTotal - updatedCart.coupon.discountValue;
-    }
-
-    if (updatedCart.coupon && cartTotal < updatedCart.coupon.minimumCartValue) {
+    if (cart.coupon && cart.cartTotal < cart.coupon.minimumCartValue) {
         updatedCart.coupon = null;
         await updatedCart.save({ validateBeforeSave: false });
-        const recalculatedCart = await Cart.findOne({ owner: req.user._id })
-            .populate({ path: 'items.productId' })
-            .populate('coupon');
-        updatedCart = recalculatedCart;
-        cartTotal = 0;
-        updatedCart.items.forEach((item) => {
-            cartTotal += item.productId.price * item.quantity;
-        });
-
-        discountedTotal = cartTotal;
-        if (updatedCart.coupon) {
-            discountedTotal = cartTotal - updatedCart.coupon.discountValue;
-        }
+        cart = await getCart(req.user._id);
     }
 
-    const cartWithTotals = {
-        _id: updatedCart._id,
-        items: updatedCart.items.map((item) => ({
-            _id: item._id,
-            product: item.productId,
-            quantity: item.quantity,
-        })),
-        cartTotal,
-        discountedTotal,
-        coupon: updatedCart.coupon,
-    };
-
-    return res.status(200).json({
-        data: cartWithTotals,
+    res.status(200).json({
+        data: cart,
         message: 'Cart item removed successfully',
     });
 });
 
-const clearCart = asyncHandler(async (req, res) => {
+export const clearCart = asyncHandle(async (req, res) => {
     await Cart.findOneAndUpdate(
-        {
-            owner: req.user._id,
-        },
-        {
-            $set: {
-                items: [],
-                coupon: null,
-            },
-        },
+        { owner: req.user._id },
+        { $set: { items: [], coupon: null } },
         { new: true }
     );
-    const cart = await Cart.findOne({ owner: req.user._id })
-        .populate({ path: 'items.productId' })
-        .populate('coupon');
-
-    let cartTotal = 0;
-    cart.items.forEach((item) => {
-        cartTotal += item.productId.price * item.quantity;
-    });
-
-    let discountedTotal = cartTotal;
-    if (cart.coupon) {
-        discountedTotal = cartTotal - cart.coupon.discountValue;
-    }
-
-    const cartWithTotals = {
-        _id: cart._id,
-        items: cart.items.map((item) => ({
-            _id: item._id,
-            product: item.productId,
-            quantity: item.quantity,
-        })),
-        cartTotal,
-        discountedTotal,
-        coupon: cart.coupon,
-    };
-
-    return res.status(200).json({
-        data: cartWithTotals,
-        message: 'Cart has been cleared',
-    });
+    const cart = await getCart(req.user._id);
+    res.status(200).json({ cart, message: 'Cart has been cleared' });
 });
-
-export {
-    getUserCart,
-    addItemOrUpdateItemQuantity,
-    removeItemFromCart,
-    clearCart,
-};

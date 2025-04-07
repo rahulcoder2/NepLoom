@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { AvailableCouponTypes, CouponTypeEnum } from '../constants';
+import { AvailableCouponTypes, CouponTypeEnum } from '../constants.js';
 
 const {Schema, model} = mongoose
 

@@ -8,12 +8,13 @@ import {
 } from '../controllers/category.controllers.js';
 import { verifyjwt, verifyPermission } from '../middleware/auth.middleware.js';
 import { UserRolesEnum } from '../constants.js';
+import { upload } from '../middleware/multer.middleware.js';
 
 const router = Router();
 
 router
     .route('/')
-    .post(verifyjwt, verifyPermission([UserRolesEnum.ADMIN]), createCategory) // Only Admin can create
+    .post(verifyjwt, verifyPermission([UserRolesEnum.ADMIN]), upload.fields([{ name: 'image', maxCount: 1 }]), createCategory) // Only Admin can create
     .get(getAllCategories);
 
 router

@@ -4,12 +4,12 @@ import {
     addItemOrUpdateItemQuantity,
     removeItemFromCart,
     clearCart,
-} from '../controllers/cart.controller.js'; // Adjust the path if needed
-import { verifyJWT } from '../middlewares/auth.middleware.js'; // Import your auth middleware
+} from '../controllers/cart.controllers.js';
+import { verifyjwt } from '../middleware/auth.middleware.js'; 
 
 const router = Router();
 
-router.use(verifyJWT); 
+router.use(verifyjwt); 
 
 router.route('/').get(getUserCart).delete(clearCart);
 

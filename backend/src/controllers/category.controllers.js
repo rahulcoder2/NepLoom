@@ -27,7 +27,7 @@ export const createCategory = asyncHandle(async (req, res) => {
 
     const newCategory = new Category({
         name,
-        image: { url: uploadedImage.url },
+        image: uploadedImage.url,
         owner: req.user._id,
     });
 
