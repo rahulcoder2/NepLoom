@@ -1,9 +1,13 @@
-// app/components/ProductCard.tsx
-
 import Image from "next/image";
 import Link from "next/link";
-import { StarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import {
+  formatPriceNPR,
+  formatDiscountPriceNPR,
+  calculateDiscountPercentage,
+  renderRatingStars,
+  getRatingValue,
+} from "@/lib/helper";
 
 interface ProductCardProps {
   product: {
@@ -18,48 +22,20 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product, className }: ProductCardProps) {
-  const formattedPrice = new Intl.NumberFormat("en-NP", {
-    style: "currency",
-    currency: "NPR",
-  }).format(product.price);
-
-  const formattedDiscountPrice =
-    product.discountPrice && product.discountPrice > 0
-      ? new Intl.NumberFormat("en-NP", {
-          style: "currency",
-          currency: "NPR",
-        }).format(product.discountPrice)
-      : null;
-
-  const discountPercentage =
-    product.discountPrice && product.discountPrice > 0
-      ? Math.round(
-          ((product.price - product.discountPrice) / product.price) * 100
-        )
-      : null;
-
-  const rating = product.ratings ?? 0;
-
-  const stars = Array.from({ length: 5 }).map((_, index) => (
-    <StarIcon
-      key={index}
-      size={14}
-      className={cn(
-        "fill-current",
-        index < Math.floor(rating)
-          ? "text-yellow-400"
-          : index < rating
-          ? "text-yellow-400/50"
-          : "text-gray-300"
-      )}
-    />
-  ));
+  const formattedPrice = formatPriceNPR(product.price);
+  const formattedDiscountPrice = formatDiscountPriceNPR(product.discountPrice);
+  const discountPercentage = calculateDiscountPercentage(
+    product.price,
+    product.discountPrice
+  );
+  const ratingValue = getRatingValue(product.ratings);
+  const stars = renderRatingStars(ratingValue);
 
   return (
     <Link
       href={`/products/${product._id}`}
       className={cn(
-        "group flex h-full flex-col rounded-md border border-gray-200 bg-white p-2 sm:p-3 transition-all hover:shadow-md", // Added sm:p-3 for larger padding on small screens and up
+        "group flex h-full flex-col rounded-md border border-gray-200 bg-white p-2 sm:p-3 transition-all hover:shadow-md",
         className
       )}
     >
@@ -85,7 +61,9 @@ export default function ProductCard({ product, className }: ProductCardProps) {
         {typeof product.ratings === "number" && product.ratings > 0 && (
           <div className="mb-2 flex items-center gap-1">
             <div className="flex items-center">{stars}</div>
-            <span className="text-xs text-gray-500">({rating.toFixed(1)})</span>
+            <span className="text-xs text-gray-500">
+              ({ratingValue.toFixed(1)})
+            </span>
           </div>
         )}
         <div className="mt-auto">

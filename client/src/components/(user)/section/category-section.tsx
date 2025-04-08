@@ -27,13 +27,11 @@ export default function CategorySection() {
         setCategories(response.data.categories.categories);
       } catch (err: unknown) {
         console.error("Failed to fetch categories:", err);
-        // You might want to show a message to the user, but not within this component.
-        // A parent component could handle this, or you could use a toast/notification library.
       }
     };
 
     fetchCategories();
-  }, []);
+  }, [isMobile]);
 
   return (
     <>
