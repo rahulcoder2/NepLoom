@@ -19,7 +19,7 @@ const CategoryCard = ({ category, className }: CategoryCardProps) => {
       <Link
         href={`/categories/${category._id}`}
         className={cn(
-          "flex flex-col items-center transition-all hover:scale-105",
+          "flex flex-col items-center transition-all hover:scale-105 relative overflow-hidden rounded-xl pt-1",
           className
         )}
         aria-label={`Browse ${category.name} category`}

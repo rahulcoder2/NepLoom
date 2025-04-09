@@ -1,3 +1,4 @@
+// src/components/shared/product-card.tsx
 import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
@@ -8,16 +9,10 @@ import {
   renderRatingStars,
   getRatingValue,
 } from "@/lib/helper";
+import { Product } from "@/types/types"; // Import Product type
 
 interface ProductCardProps {
-  product: {
-    _id: string;
-    name: string;
-    price: number;
-    discountPrice?: number;
-    image: { url: string };
-    ratings?: number;
-  };
+  product: Product; // Use Product type here
   className?: string;
 }
 
