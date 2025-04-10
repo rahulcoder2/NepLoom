@@ -29,6 +29,8 @@ const CategoryCard = ({ category, className }: CategoryCardProps) => {
             src={category.image.url}
             alt={`${category.name} Category Icon`}
             fill
+            sizes="64px"
+            priority
             className="object-contain"
           />
         </div>

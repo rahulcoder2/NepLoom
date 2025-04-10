@@ -9,27 +9,23 @@ export const verifyjwt = asyncHandle(async (req, res, next) => {
         req.header('Authorization')?.replace('Bearer ', '');
 
     if (!token) {
-        res.status(401).json({
-            message: 'Unauthorized request',
-        });
+        return res.status(401).json({ error: 'Unauthorized request' });
     }
 
     try {
-        const decodedToken = jwt.decode(token, process.env.ACCESS_TOKEN_SECRET);
-
+        const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
         const user = await User.findById(decodedToken?._id).select(
-            '-password -refreshToken'
+            '-password -refreshToken '
         );
-
         if (!user) {
-            res.status(401).json({
-                message: 'Invalid access token',
-            });
+            // Client should make a request to /api/users/refresh-token if they have refreshToken present in their cookie
+            // Then they will get a new access token which will allow them to refresh the access token without logging out the user
+            return res.status(401).json({ error: 'Invalid access token' });
         }
         req.user = user;
         next();
     } catch (error) {
-        res.status(401).json({
+        return res.status(401).json({
             message: error?.message || 'Invalid access token',
         });
     }

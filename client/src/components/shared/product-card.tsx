@@ -41,6 +41,7 @@ export default function ProductCard({ product, className }: ProductCardProps) {
           fill
           sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 25vw"
           className="object-cover transition-transform group-hover:scale-105"
+          priority
         />
         {discountPercentage && (
           <div className="absolute right-2 top-2 rounded-full bg-primary px-2 py-1 text-xs font-bold text-white">

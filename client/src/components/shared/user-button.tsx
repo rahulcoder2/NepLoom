@@ -1,6 +1,4 @@
 "use client";
-
-import { useState } from "react";
 import Link from "next/link";
 import {
   DropdownMenu,
@@ -10,49 +8,75 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { User } from "lucide-react";
+import { User as UserIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import axios from "axios";
+import { toast } from "sonner";
+import { logOut } from "@/redux/features/auth/auth-slice";
+import { useAppDispatch, useAppSelector } from "@/redux/store";
+import { USER_ROLES } from "@/types/types";
 
 const UserButton = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // Set initial state as logged out
+
+  const router = useRouter();
+  const { isLoggedIn, userDetails } = useAppSelector((state) => state.auth); 
+
+  const dispatch =useAppDispatch();
+
+  const handleLogout = async () => {
+    try {
+      const res = await axios.post("http://localhost:8000/api/user/logout"); 
+      if (res.status === 200) {
+        dispatch(logOut()); // Clear client-side Redux state
+        router.push("/login");
+        toast.success(res.data.message || "Logged out successfully!");
+      } else {
+        toast.error("Failed to logout");
+      }
+    } catch (error) {
+      console.error("Logout error:", error);
+      toast.error("An error occurred during logout");
+    }
+  };
+
+  if (!isLoggedIn) {
+    return (
+      <Button
+        variant="outline"
+        className="flex items-center gap-2 px-3 py-1 text-sm sm:px-4 sm:py-2 text-primary hover:text-primary"
+        asChild
+      >
+        <Link href="/login" className="flex items-center gap-1 sm:gap-2 ">
+          <UserIcon className="h-4 w-4" />
+          <span>Login</span>
+        </Link>
+      </Button>
+    );
+  }
 
   return (
-    <>
-      {isLoggedIn ? (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <div className="relative cursor-pointer text-white">
-              <User className="h-6 w-6" />
-              <span className="sr-only">User menu</span>
-            </div>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="center" className="w-48">
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <Link href="/profile">Profile</Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Link href="/myorders">My Orders</Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setIsLoggedIn(false)}>
-              Logout
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      ) : (
-        <Button
-          variant="outline"
-          className="flex items-center gap-2 px-3 py-1 text-sm sm:px-4 sm:py-2 text-primary hover:text-primary"
-          asChild
-        >
-          <Link href="/login" className="flex items-center gap-1 sm:gap-2 ">
-            <User className="h-4 w-4" />
-            <span>Login</span>
-          </Link>
-        </Button>
-      )}
-    </>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <div className="relative cursor-pointer text-white">
+          <UserIcon className="h-6 w-6" />
+          <span className="sr-only">User menu</span>
+        </div>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="center" className="w-48">
+        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem>
+          <Link href="/profile">Profile</Link>
+        </DropdownMenuItem>
+        {userDetails?.role === USER_ROLES.user && (
+          <DropdownMenuItem>
+            <Link href="/myorders">My Orders</Link>
+          </DropdownMenuItem>
+        )}
+        <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 };
 

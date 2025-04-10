@@ -31,23 +31,23 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en">
       <body
         className={`${inter.variable} ${poppins.variable} font-poppins antialiased`}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="light"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <ReduxProvider>
+        <ReduxProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="light"
+            enableSystem
+            disableTransitionOnChange
+          >
             <div className="relative flex min-h-screen flex-col">
               <main className="flex-1">{children}</main>
             </div>
             <Toaster />
-          </ReduxProvider>
-        </ThemeProvider>
+          </ThemeProvider>
+        </ReduxProvider>
       </body>
     </html>
   );

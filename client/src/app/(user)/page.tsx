@@ -1,13 +1,9 @@
-import { Suspense } from "react";
 import CategorySection from "@/components/(user)/section/category-section";
 import HeroCarousel from "@/components/(user)/section/hero-carousel";
 import ProductSection from "@/components/(user)/section/product-section";
 import Container from "@/components/shared/container";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import CategorySkeleton from "@/components/(user)/skeletons/category-skeleton";
-import ProductSkeleton from "@/components/(user)/skeletons/product-skeleton";
-
 
 export default function HomePage() {
   return (
@@ -22,9 +18,8 @@ export default function HomePage() {
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-2xl font-bold">Categories</h2>
         </div>
-        <Suspense fallback={<CategorySkeleton />}>
-          <CategorySection />
-        </Suspense>
+
+        <CategorySection />
       </div>
 
       {/* Products */}
@@ -38,9 +33,7 @@ export default function HomePage() {
             View All <ArrowRight size={16} />
           </Link>
         </div>
-        <Suspense fallback={<ProductSkeleton />}>
-          <ProductSection />
-        </Suspense>
+        <ProductSection />
       </div>
     </Container>
   );

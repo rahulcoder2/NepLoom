@@ -1,4 +1,13 @@
+export enum LOGIN_TYPES {
+  emailPassword = "EMAIL_PASSWORD",
+  google = "GOOGLE",
+}
 
+/* USER ROLES */
+export enum USER_ROLES {
+  admin = "ADMIN",
+  user = "USER",
+}
 export interface ProductType {
   _id: string;
   name: string;
@@ -22,4 +31,3 @@ export interface Product {
   image: { url: string };
   ratings?: number;
 }
-

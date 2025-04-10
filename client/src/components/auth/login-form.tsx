@@ -12,9 +12,19 @@ import { loginFormData, loginSchema } from "@/schemas/login-schema";
 import axios, { AxiosError } from "axios";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
+import { useDispatch } from "react-redux";
+import { logIn, updateLoginCheckDone } from "@/redux/features/auth/auth-slice";
+import { USER_ROLES } from "@/types/types";
 
 const LoginForm = () => {
-  const [isForgetPasswordModelOpen, setIsForgetPasswordModelOpen] = useState(false);
+  const [isForgetPasswordModelOpen, setIsForgetPasswordModelOpen] =
+    useState(false);
+
+  const router = useRouter();
+
+  const dispatch = useDispatch()
+
   const {
     handleSubmit,
     register,
@@ -24,20 +34,25 @@ const LoginForm = () => {
     resolver: zodResolver(loginSchema),
   });
 
-    const router = useRouter();
-
-  const onSubmit = async (signinData : loginFormData) => {
+  const onSubmit = async (signinData: loginFormData) => {
     try {
       const res = await axios.post(
         "http://localhost:8000/api/user/login",
         signinData
       );
       if (res.status === 200) {
+        console.log(res.data);
         toast.success(res.data.message || "Login successful!");
 
+        // Dispatch login action
+        dispatch(logIn(res.data.user));
+        
+        // Update login check done
+        dispatch(updateLoginCheckDone(true));
+
         // Check user role and redirect accordingly
-        const { role } = res.data?.user
-        if (role === "admin") {
+        const { role } = res.data?.user;
+        if (role === USER_ROLES.admin) {
           router.push("/admin/dashboard");
         } else {
           router.push("/");
@@ -77,7 +92,12 @@ const LoginForm = () => {
             <p className="text-red-500 text-sm">{errors.password.message}</p>
           )}
         </div>
-        <Button type="submit" className="w-full" disabled={isSubmitting}>
+        <Button
+          type="submit"
+          className="w-full"
+          size="lg"
+          disabled={isSubmitting}
+        >
           {isSubmitting ? "Logging in..." : "Login"}
         </Button>
         <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
@@ -85,7 +105,15 @@ const LoginForm = () => {
             Or continue with
           </span>
         </div>
-        <Button variant="outline" className="w-full">
+        <Button variant="outline" size="lg" className="w-full">
+          <Image
+            src="/icons/google.svg"
+            alt="Google"
+            width={20}
+            height={20}
+            className="mr-2"
+            priority
+          />
           Login with Google
         </Button>
         <div className="text-center text-sm">
