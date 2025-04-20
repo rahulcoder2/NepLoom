@@ -9,10 +9,9 @@ import {
   renderRatingStars,
   getRatingValue,
 } from "@/lib/helper";
-import { Product } from "@/types/types"; // Import Product type
 
 interface ProductCardProps {
-  product: Product; // Use Product type here
+  product: Product; 
   className?: string;
 }
 

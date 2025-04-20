@@ -8,6 +8,8 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Slash } from "lucide-react";
+import CartItem from "./cart-items";
+import CartSummary from "./cart-summary";
 
 const page = () => {
   return (
@@ -26,6 +28,9 @@ const page = () => {
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
+
+        <CartItem />
+        <CartSummary/>
       </Container>
     </div>
   );

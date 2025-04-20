@@ -1,4 +1,4 @@
-import { LOGIN_TYPES, USER_ROLES } from "@/types/types";
+import { LOGIN_TYPES, USER_ROLES } from "@/types/auth-types";
 
 export interface User {
   _id: string;

@@ -13,9 +13,9 @@ import axios, { AxiosError } from "axios";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { useDispatch } from "react-redux";
 import { logIn, updateLoginCheckDone } from "@/redux/features/auth/auth-slice";
-import { USER_ROLES } from "@/types/types";
+import { USER_ROLES } from "@/types/auth-types";
+import { useAppDispatch } from "@/redux/store";
 
 const LoginForm = () => {
   const [isForgetPasswordModelOpen, setIsForgetPasswordModelOpen] =
@@ -23,7 +23,7 @@ const LoginForm = () => {
 
   const router = useRouter();
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const {
     handleSubmit,
@@ -37,13 +37,12 @@ const LoginForm = () => {
   const onSubmit = async (signinData: loginFormData) => {
     try {
       const res = await axios.post(
-        "http://localhost:8000/api/user/login",
-        signinData
+        `${process.env.NEXT_PUBLIC_API_URL}/user/login`,
+        signinData,
+        {withCredentials: true}
       );
       if (res.status === 200) {
-        console.log(res.data);
         toast.success(res.data.message || "Login successful!");
-
         // Dispatch login action
         dispatch(logIn(res.data.user));
         

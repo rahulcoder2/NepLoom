@@ -7,9 +7,11 @@ import Container from "./container";
 import { useIsScroll } from "@/hooks/use-scroll";
 import UserButton from "./user-button";
 import SearchBar from "./search-bar";
+import { useAppSelector } from "@/redux/store";
 
 export default function Header() {
   const scrolled = useIsScroll();
+  const {userCart}= useAppSelector((state)=> state.cart)
 
   return (
     <header
@@ -39,7 +41,9 @@ export default function Header() {
               <ShoppingCart className="h-5 w-5" />
               <span className="sr-only">Cart</span>
               <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-white text-[10px] font-bold text-primary">
-                3
+                {userCart?.cartTotal && userCart.cartTotal > 0
+                  ? userCart.cartTotal
+                  : 0}
               </span>
             </Link>
           </Button>

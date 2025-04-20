@@ -29,7 +29,7 @@ const SignupForm = () => {
   const router = useRouter();
   const onSubmit = async (formData: signUpFormData) => {
     try {
-      const res = await axios.post("/api/auth/register", formData);
+      const res = await axios.post(`${process.env.NEXT_PUBLIC_URL_API}/user/register`, formData);
       if (res.status == 201) {
         toast.success(res.data.message);
         router.push("/login");

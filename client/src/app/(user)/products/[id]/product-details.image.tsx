@@ -1,9 +1,7 @@
-import { ProductType } from "@/types/types";
 import Image from "next/image";
 
-// Define props interface for ProductDetailsImage
 interface ProductDetailsImageProps {
-  product: ProductType;
+  product: Product;
 }
 
 const ProductDetailsImage = ({ product }: ProductDetailsImageProps) => {

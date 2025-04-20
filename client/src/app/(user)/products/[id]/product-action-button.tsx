@@ -2,13 +2,16 @@
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { ProductType } from "@/types/types";
+import { setUserCart } from "@/redux/features/cart/cart-slice";
+import { useAppDispatch } from "@/redux/store";
+import axios, { AxiosError } from "axios";
 import { ShoppingCart } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 
 // Define props interface for ProductDetailsActionButton
 interface ProductDetailsActionButtonProps {
-  product: ProductType;
+  product: Product;
 }
 
 const ProductDetailsActionButton = ({
@@ -18,6 +21,7 @@ const ProductDetailsActionButton = ({
     product.size?.[0]
   );
   const [quantity, setQuantity] = useState(1);
+  const dispatch = useAppDispatch();
   const maxQuantity = product.stock;
   const isOutOfStock = maxQuantity <= 0;
 
@@ -39,13 +43,29 @@ const ProductDetailsActionButton = ({
     }
   };
 
-  const onAddToCart = () => {
+  const onAddToCart = async () => {
     if (product && !isOutOfStock) {
       console.log("Adding to cart:", {
         productId: product._id,
         quantity,
         selectedSize,
       });
+
+      try {
+        const res = await axios.post(
+          `${process.env.NEXT_PUBLIC_API_URL}/cart/items/${product._id}`,
+          { quantity: quantity },
+          { withCredentials: true }
+        );
+        if (res.status === 200) {
+          toast.success(res.data?.message);
+          dispatch(setUserCart(res?.data.newCart)); 
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    } else if (isOutOfStock) {
+      toast.error("Product is out of stock");
     }
   };
 

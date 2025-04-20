@@ -6,14 +6,13 @@ import ProductDetailsActionButton from "./product-action-button";
 import ProductReturns from "./product-returns";
 import ProductDelivery from "./product-delivery";
 import { notFound } from "next/navigation";
-import { ProductType } from "@/types/types";
 
-const getProductById = async (id: string): Promise<ProductType | null> => {
+const getProductById = async (id: string): Promise<Product | null> => {
   try {
     const { data } = await axios.get(
       `${process.env.NEXT_PUBLIC_API_URL}/products/${id}`
     );
-    return data?.product || null;
+    return data?.product
   } catch (error) {
     console.error("Failed to fetch product:", error);
     return null;

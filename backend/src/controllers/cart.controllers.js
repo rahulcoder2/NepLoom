@@ -99,7 +99,7 @@ export const addItemOrUpdateItemQuantity = asyncHandle(async (req, res) => {
     await cart.save({ validateBeforeSave: true });
     const newCart = await getCart(req.user._id);
 
-    res.status(200).json({ data: newCart, message: 'Item added successfully' });
+    res.status(200).json({ newCart, message: 'Item added successfully' });
 });
 
 export const getUserCart = asyncHandle(async (req, res) => {
@@ -127,7 +127,7 @@ export const removeItemFromCart = asyncHandle(async (req, res) => {
     }
 
     res.status(200).json({
-        data: cart,
+        cart,
         message: 'Cart item removed successfully',
     });
 });

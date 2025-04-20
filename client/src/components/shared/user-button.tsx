@@ -15,7 +15,7 @@ import axios from "axios";
 import { toast } from "sonner";
 import { logOut } from "@/redux/features/auth/auth-slice";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
-import { USER_ROLES } from "@/types/types";
+import { USER_ROLES } from "@/types/auth-types";
 
 const UserButton = () => {
 
@@ -26,9 +26,11 @@ const UserButton = () => {
 
   const handleLogout = async () => {
     try {
-      const res = await axios.post("http://localhost:8000/api/user/logout"); 
+      const res = await axios.post("http://localhost:8000/api/user/logout", {}, {
+        withCredentials: true,
+      }); 
       if (res.status === 200) {
-        dispatch(logOut()); // Clear client-side Redux state
+        dispatch(logOut()); 
         router.push("/login");
         toast.success(res.data.message || "Logged out successfully!");
       } else {

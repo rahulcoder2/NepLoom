@@ -5,11 +5,10 @@ import {
   getRatingValue,
   renderRatingStars,
 } from "@/lib/helper";
-import { ProductType } from "@/types/types";
 
 // Define the props interface for ProductDetailsInfo
 interface ProductDetailsInfoProps {
-  product: ProductType;
+  product: Product
 }
 
 const ProductDetailsInfo = ({ product }: ProductDetailsInfoProps) => {

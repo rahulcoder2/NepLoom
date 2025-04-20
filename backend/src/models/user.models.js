@@ -9,6 +9,7 @@ import {
     UserLoginType,
     UserRolesEnum,
 } from '../constants.js';
+import { Cart } from './cart.models.js';
 
 const { Schema, model } = mongoose;
 
@@ -59,6 +60,19 @@ userSchema.pre('save', async function (next) {
     this.password = await bcrypt.hash(this.password, 10);
     next();
 });
+
+userSchema.post('save', async function (user,next){
+    const cart = await Cart.findOne({ owner: user._id, items: [] });
+
+    if (!cart) {
+        await Cart.create({
+          owner: user._id,
+          items: [],
+        });
+    }
+
+    next();
+})
 
 userSchema.methods.isPasswordCorrect = async function (password) {
     return await bcrypt.compare(password, this.password);
